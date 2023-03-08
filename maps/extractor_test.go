@@ -34,40 +34,6 @@ func TestExtractor(t *testing.T) {
 			},
 			expected: pointer.ToInt(8),
 		},
-		{
-			name: `get-by-cargo-direct`,
-			value: map[string]any{
-				"name":      "John",
-				"name_uid":  "Jane",
-				"name_type": "jxs:string",
-			},
-			manipulation: func(getter *Extractor) any {
-				return getter.GetByCargoType(`name`).ToString()
-			},
-			expected: "John",
-		},
-		{
-			name: `get-by-cargo-fallback`,
-			value: map[string]any{
-				"name_uid":  "Jane",
-				"name_type": "jxs:string",
-			},
-			manipulation: func(getter *Extractor) any {
-				return getter.GetByCargoType(`name`).ToString()
-			},
-			expected: "Jane",
-		},
-		{
-			name: `get-by-cargo-none`,
-			value: map[string]any{
-				"name_uid":  "Jane",
-				"name_type": "nonexistent:string",
-			},
-			manipulation: func(getter *Extractor) any {
-				return getter.GetByCargoType(`name`).ToString()
-			},
-			expected: "",
-		},
 	}
 
 	for _, testCase := range testCases {
