@@ -36,18 +36,6 @@ func (e *Extractor) Get(path string) *Extractor {
 	return &clone
 }
 
-// GetByCargoType get string from <path>_uid instead of json from path if <path>_type is `jxs:string`
-func (e *Extractor) GetByCargoType(path string) *Extractor {
-	clone := *e
-	clone.value = clone.value.Get(path)
-	if !clone.value.Exists() {
-		if e.value.Get(path+`_type`).String() == `jxs:string` {
-			clone.value = e.value.Get(path + `_uid`)
-		}
-	}
-	return &clone
-}
-
 func (e *Extractor) Exists() bool {
 	if e.value.Type == gjson.Null {
 		return false
