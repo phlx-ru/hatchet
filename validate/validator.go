@@ -3,7 +3,6 @@ package validate
 import (
 	"fmt"
 	"reflect"
-	"strconv"
 	"strings"
 
 	"github.com/go-playground/locales"
@@ -25,29 +24,21 @@ var (
 	universalTranslator *ut.UniversalTranslator
 
 	translator ut.Translator
-
-	customValidations = map[string]func(fl validator.FieldLevel) bool{
-		// Override internal boolean validator with type check (for case `type SomeProperty bool`)
-		`boolean`: func(fl validator.FieldLevel) bool {
-			if fl.Field().Type().String() == `bool` {
-				return true
-			}
-			value := fl.Field().String()
-			_, err := strconv.ParseBool(value)
-			return err == nil
-		},
-	}
 )
+
+func RegisterCustomValidations(customValidations map[string]func(fl validator.FieldLevel) bool) error {
+	mustLoad()
+	for tag, fn := range customValidations {
+		if err := validate.RegisterValidation(tag, fn); err != nil {
+			return err
+		}
+	}
+	return nil
+}
 
 func mustLoad() {
 	if validate == nil {
 		validate = validator.New()
-
-		for tag, fn := range customValidations {
-			if err := validate.RegisterValidation(tag, fn); err != nil {
-				panic(err)
-			}
-		}
 
 		validate.RegisterTagNameFunc(
 			func(sf reflect.StructField) string {
