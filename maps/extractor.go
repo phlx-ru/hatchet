@@ -180,6 +180,10 @@ func (e *Extractor) ToPointerTimestamp() *timestamppb.Timestamp {
 	return timestamppb.New(e.value.Time())
 }
 
+func (e *Extractor) ToTime() time.Time {
+	return e.value.Time()
+}
+
 func (e *Extractor) ToTimeString() string {
 	return e.value.Time().Format(time.RFC3339)
 }
@@ -189,6 +193,17 @@ func (e *Extractor) ToPointerTimeString() *string {
 		return nil
 	}
 	return pointer.ToString(e.ToTimeString())
+}
+
+func (e *Extractor) ToTimeStringWithTransform(transform func(time.Time) time.Time) string {
+	return transform(e.ToTime()).Format(time.RFC3339)
+}
+
+func (e *Extractor) ToPointerTimeStringWithTransform(transform func(time.Time) time.Time) *string {
+	if !e.Exists() {
+		return nil
+	}
+	return pointer.ToString(transform(e.ToTime()).Format(time.RFC3339))
 }
 
 func (e *Extractor) IsArray() bool {
