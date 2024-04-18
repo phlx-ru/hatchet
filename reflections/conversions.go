@@ -10,7 +10,7 @@ import (
 func ConvertValue(toType reflect.Type, value any) (target *reflect.Value, err error) {
 	target = pointer.To[reflect.Value](reflect.Zero(toType))
 	if value == nil {
-		return
+		return target, err
 	}
 	isTargetPointer := toType.Kind() == reflect.Pointer
 	if isTargetPointer {
@@ -18,7 +18,7 @@ func ConvertValue(toType reflect.Type, value any) (target *reflect.Value, err er
 	}
 	source := reflect.ValueOf(value)
 	if IsEmpty(&source) {
-		return
+		return target, err
 	}
 	sourceType := source.Type()
 	isSourcePointer := source.Kind() == reflect.Pointer
@@ -40,7 +40,7 @@ func ConvertValue(toType reflect.Type, value any) (target *reflect.Value, err er
 		} else {
 			target = pointer.To[reflect.Value](targetValue)
 		}
-		return
+		return target, err
 	}
 
 	return nil, fmt.Errorf(`unable to convert type [%s] to type [%s] with value [%v]`,

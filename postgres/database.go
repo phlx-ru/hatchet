@@ -15,10 +15,9 @@ const (
 )
 
 type Database struct {
-	driver            *entDialectSQL.Driver
-	sendStatsEvery    time.Duration
-	metricPrefix      string
-	createIfNotExists bool
+	driver         *entDialectSQL.Driver
+	sendStatsEvery time.Duration
+	metricPrefix   string
 }
 
 func (d *Database) Driver() *entDialectSQL.Driver {

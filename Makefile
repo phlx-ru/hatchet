@@ -18,6 +18,11 @@ help:
 
 .DEFAULT_GOAL := help
 
+.PHONY: init
+# init env
+init:
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+
 .PHONY: generate
 # run golang generate
 generate:
@@ -36,24 +41,12 @@ test:
 .PHONY: lint
 # runs linter from golangci-lint docker image
 lint:
-	@docker run --rm -v $$(pwd):/app \
-		-e GOCACHE=/cache/go \
-		-e GOLANGCI_LINT_CACHE=/cache/go \
-		-v $$(go env GOCACHE):/cache/go \
-		-v $$(go env GOPATH)/pkg:/go/pkg \
-		-w /app golangci/golangci-lint:latest-alpine \
-		golangci-lint run --verbose --timeout 5m
+	@GOGC=95 golangci-lint run --verbose --timeout 5m
 
 .PHONY: lintfix
 # runs linter from golangci-lint docker image with --fix flag
 lintfix:
-	@docker run --rm -v $$(pwd):/app \
-		-e GOCACHE=/cache/go \
-		-e GOLANGCI_LINT_CACHE=/cache/go \
-		-v $$(go env GOCACHE):/cache/go \
-		-v $$(go env GOPATH)/pkg:/go/pkg \
-		-w /app golangci/golangci-lint:latest-alpine \
-		golangci-lint run --verbose --timeout 5m --fix
+	@GOGC=95 golangci-lint run --fix --verbose --timeout 5m
 
 .PHONY: changelog
 # run changelog generator (use `yarn global add changelog.md` before run this command)
