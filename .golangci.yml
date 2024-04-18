@@ -5,23 +5,19 @@ run:
   issues-exit-code: 1
   tests: true
   build-tags: []
-  skip-dirs:
-    - bin
-    - vendor
-    - tmp
-  skip-files:
-    - ".*_test.go$"
 
 output:
-  format: colored-line-number
+  formats:
+    - format: colored-line-number
+      path: stdout
   print-issued-lines: true
   print-linter-name: true
 
 linters-settings:
   govet:
-    check-shadowing: true
-  golint:
-    min-confidence: 0
+    enable:
+      - atomicalign
+      - shadow
   dupl:
     threshold: 100
   goconst:
@@ -52,6 +48,12 @@ linters:
     - staticcheck
 
 issues:
+  exclude-dirs:
+    - bin
+    - vendor
+    - tmp
+  exclude-files:
+    - ".*_test.go$"
   exclude-use-default: false
   exclude:
     - G104

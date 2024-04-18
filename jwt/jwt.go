@@ -7,7 +7,7 @@ import (
 )
 
 func Check(secret string) func(token *jwtv4.Token) (interface{}, error) {
-	return func(token *jwtv4.Token) (interface{}, error) {
+	return func(_ *jwtv4.Token) (interface{}, error) {
 		return []byte(secret), nil
 	}
 }
