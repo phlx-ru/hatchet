@@ -12,9 +12,38 @@ const (
 	databaseNameRegex      = `dbname=([a-zA-Z_][a-zA-Z0-9_]*)`
 	defaultExistedDatabase = `postgres`
 	databaseNamePostgres   = `dbname=` + defaultExistedDatabase
+	defaultTemplate        = `template0`
+	defaultCollate         = `ru_RU.UTF-8`
+	defaultCType           = `ru_RU.UTF-8`
 )
 
-func createDatabaseIfNotExists(source string) error {
+type databaseOptions struct {
+	template string
+	collate  string
+	ctype    string
+}
+
+type DatabaseOption func(*databaseOptions)
+
+func WithDatabaseOptionTemplate(template string) DatabaseOption {
+	return func(options *databaseOptions) {
+		options.template = template
+	}
+}
+
+func WithDatabaseOptionCollate(collate string) DatabaseOption {
+	return func(options *databaseOptions) {
+		options.collate = collate
+	}
+}
+
+func WithDatabaseOptionCType(ctype string) DatabaseOption {
+	return func(options *databaseOptions) {
+		options.ctype = ctype
+	}
+}
+
+func createDatabaseIfNotExists(source string, options ...DatabaseOption) error {
 	original, err := extractDatabaseNameFromSource(source)
 	if err != nil {
 		return err
@@ -34,7 +63,17 @@ func createDatabaseIfNotExists(source string) error {
 	if rows.Next() {
 		return nil
 	}
-	_, err = db.Exec(fmt.Sprintf(`create database %s`, original))
+	opts := &databaseOptions{
+		template: defaultTemplate,
+		collate:  defaultCollate,
+		ctype:    defaultCType,
+	}
+	for _, option := range options {
+		option(opts)
+	}
+	query := fmt.Sprintf(`create database "%s" with template = "%s" lc_collate = '$1' lc_ctype = '$2'`, original, opts.template)
+	args := []any{opts.collate, opts.ctype}
+	_, err = db.Exec(query, args...)
 	return err
 }
 
