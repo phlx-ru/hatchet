@@ -71,9 +71,9 @@ func createDatabaseIfNotExists(source string, options ...DatabaseOption) error {
 	for _, option := range options {
 		option(opts)
 	}
-	query := fmt.Sprintf(`create database "%s" with template = "%s" lc_collate = '$1' lc_ctype = '$2'`, original, opts.template)
-	args := []any{opts.collate, opts.ctype}
-	_, err = db.Exec(query, args...)
+	query := fmt.Sprintf(`create database "%s" with template = "%s" lc_collate = '%s' lc_ctype = '%s'`,
+		original, opts.template, opts.collate, opts.ctype)
+	_, err = db.Exec(query)
 	return err
 }
 
