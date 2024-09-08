@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/go-kratos/gin"
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 
 	pkgJWT "github.com/phlx-ru/hatchet/jwt"
 )
