@@ -12,7 +12,7 @@ require (
 	github.com/go-playground/locales v0.14.1
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/go-playground/validator/v10 v10.11.2
-	github.com/golang-jwt/jwt/v4 v4.5.0
+	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/stretchr/testify v1.8.2
 	github.com/tidwall/gjson v1.14.4
 	golang.org/x/crypto v0.6.0
