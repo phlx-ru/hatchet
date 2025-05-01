@@ -6,15 +6,24 @@ import (
 	jwtv5 "github.com/golang-jwt/jwt/v5"
 )
 
+const DefaultPeriod = 365 * 24 * time.Hour
+
 func Check(secret string) func(token *jwtv5.Token) (interface{}, error) {
 	return func(_ *jwtv5.Token) (interface{}, error) {
 		return []byte(secret), nil
 	}
 }
 
-func Make(issuer string, secret string) string {
+func Make(issuer string, secret string, options ...Option) string {
+	settings := &Options{
+		Period: DefaultPeriod,
+	}
+	for _, option := range options {
+		option(settings)
+	}
+
 	claims := &jwtv5.RegisteredClaims{
-		ExpiresAt: jwtv5.NewNumericDate(time.Now().Add(365 * 24 * time.Hour)),
+		ExpiresAt: jwtv5.NewNumericDate(time.Now().Add(settings.Period)),
 		Issuer:    issuer,
 	}
 
